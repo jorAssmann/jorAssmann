@@ -19,8 +19,12 @@
 - [ ] Workflow „Prüfen“ grün
 - [ ] Nach einigen Tagen: Größe und Trend plausibel?
 
+## Etappe 2a: Feinschliff ✔
+- [x] Becken im Breitformat 840 × 270, füllt die README-Breite
+- [x] Beschriftung: Contributions der letzten 30 Tage statt des Jahres
+- [x] Profiltext oberhalb des Koi: „Das ist mein Contribution-Koi“
+
 ## Später
 - [ ] Private Kopie: frisch ohne Historie nach `~/Projekte/privat/github-koi`, Repo `<privater-name>/<privater-name>`
       (vorher: Okay der Führungskraft, ggf. MIT-Lizenz im Firmen-Repo; privaten Benutzernamen erfragen)
 - [ ] Ähnliche Sprachfarben (Python/TypeScript sind beide blau) unterscheidbarer machen
-- [ ] Profiltext oberhalb des Koi in README.md ausformulieren

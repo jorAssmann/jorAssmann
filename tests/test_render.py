@@ -38,14 +38,14 @@ def test_unknown_body_is_rejected():
 
 
 def test_legend_can_be_hidden():
-    legend = "im letzten Jahr</text>"
+    legend = "in den letzten 30 Tagen</text>"
     assert legend in render_svg(demo_data(today=TODAY))
     assert legend not in render_svg(demo_data(today=TODAY), label=False)
 
 
 def test_legend_singular_and_hint_without_languages():
     svg = render_svg(KoiData.build("a", {TODAY: 1}, [], TODAY))
-    assert ">1 Contribution im letzten Jahr<" in svg
+    assert ">1 Contribution in den letzten 30 Tagen<" in svg
     assert "Farben folgen" in svg
 
 

@@ -79,7 +79,8 @@ def main(argv: list[str] | None = None) -> int:
     langs = ", ".join(f"{lang.name} {lang.share:.0%}" for lang in data.languages) or "keine"
     print(
         f"Koi gezeichnet: {out} | {data.stage}, Wachstum {data.growth:.0%}, "
-        f"{data.year_contributions} Contributions im Jahr, {data.week_contributions} diese Woche "
+        f"{data.month_contributions} Contributions in 30 Tagen, "
+        f"{data.week_contributions} diese Woche "
         f"| Sprachen: {langs}"
     )
     return 0

@@ -13,6 +13,7 @@ Ein Workflow zeichnet ihn jede Nacht neu.
 |---|---|
 | Contribution-Kalender der letzten 365 Tage | **Größe.** Jeder Tag zählt bis höchstens 3 Contributions („voll aktiv“), jüngere Tage stärker (Halbwertszeit 30 Tage). Regelmäßigkeit schlägt Masse. |
 | Veränderung gegenüber vor 7 Tagen | Beschriftung „↗ wächst“, „→ hält sich“, „↘ schrumpft“ |
+| Contributions der letzten 30 Tage | Zahl in der Beschriftung (passt zur Halbwertszeit: die Arbeit, die die Größe gerade prägt) |
 | Commits der letzten 90 Tage je Repo × Sprachanteil im Repo | **Fleckenfarben** in GitHubs Sprachfarben, Fleckenzahl nach Anteil (bis 5 Sprachen, unter 5 % entfällt). Ohne Commits in 90 Tagen: das ganze Jahr. |
 | Contributions der letzten 7 Tage | Schwimmtempo |
 | Benutzername und Sprache | Lage der Flecken (je Sprache fest, neue Sprachen verschieben nichts) |
@@ -52,7 +53,7 @@ Alle Schwellenwerte stehen kommentiert oben in [`src/koi_profil/model.py`](../sr
    - Im Profil-Repo: *Settings → Secrets and variables → Actions → New repository
      secret*, Name `KOI_TOKEN`, Wert einfügen. Den Token nirgends sonst speichern.
 4. **Erster Lauf:** *Actions → Koi → Run workflow*. Im Log steht z. B.
-   `Koi gezeichnet: … | Jungkoi, Wachstum 49 % … | Sprachen: Python 54 %, C# 31 %`.
+   `Koi gezeichnet: … | Jungkoi, Wachstum 49 %, … Contributions in 30 Tagen … | Sprachen: Python 54 %, C# 31 %`.
    Danach läuft er jede Nacht um 04:15 UTC. Bleiben die Sprachen trotz Commits in
    Firmen-Repos leer: mit der IT klären, ob *Contents: Read-only* nötig ist, und dann
    nur für die tatsächlich bearbeiteten Repos vergeben.
@@ -68,7 +69,7 @@ auf einzelne Repos, wird mit dem Rest gezeichnet, ebenfalls mit Warnung.
 
 ## Sicherheit und Datenschutz
 
-- **Öffentlich wird:** Lebensphase, Contributions-Zahl des Jahres und die Namen der
+- **Öffentlich wird:** Lebensphase, Contributions-Zahl der letzten 30 Tage und die Namen der
   Sprachen samt Mengenverhältnis. Weil der Workflow das Bild täglich committet, ergibt die
   Git-Historie dazu eine öffentliche Zeitreihe (Größe, Jahreszahl, Schwimmtempo als Maß
   der Wochenaktivität). Repo-Namen, Code und Commit-Texte erscheinen nirgends.

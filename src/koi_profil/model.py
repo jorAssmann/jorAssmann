@@ -16,6 +16,9 @@ from datetime import date, timedelta
 WINDOW_DAYS = 365
 # Nach so vielen Tagen zählt ein Tag nur noch halb so viel. Kleiner = reagiert schneller.
 HALF_LIFE_DAYS = 30
+# Zeitraum der Zahl in der Beschriftung. Passt zur Halbwertszeit: Das ist die Arbeit,
+# die die Größe des Koi gerade prägt.
+MONTH_DAYS = 30
 # Ab so vielen Contributions gilt ein Tag als voll aktiv. Mehr bringt nichts, damit ein
 # einzelner Großkampftag nicht eine Woche Pause aufwiegt: Regelmäßigkeit vor Masse.
 FULL_DAY_CONTRIBUTIONS = 3
@@ -123,7 +126,7 @@ class KoiData:
     """Alles, was der Renderer über den Koi wissen muss."""
 
     login: str
-    year_contributions: int
+    month_contributions: int
     week_contributions: int
     activity: float
     activity_week_ago: float
@@ -139,10 +142,12 @@ class KoiData:
     ) -> "KoiData":
         """Rechnet Kalender und Sprachgewichte in Koi-Kennzahlen um."""
         week_start = today - timedelta(days=6)
-        year_start = today - timedelta(days=WINDOW_DAYS - 1)
+        month_start = today - timedelta(days=MONTH_DAYS - 1)
         return cls(
             login=login,
-            year_contributions=sum(max(c, 0) for d, c in daily.items() if year_start <= d <= today),
+            month_contributions=sum(
+                max(c, 0) for d, c in daily.items() if month_start <= d <= today
+            ),
             week_contributions=sum(max(c, 0) for d, c in daily.items() if week_start <= d <= today),
             activity=activity_score(daily, today),
             activity_week_ago=activity_score(daily, today - timedelta(days=7)),

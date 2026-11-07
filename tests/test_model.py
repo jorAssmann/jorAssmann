@@ -76,7 +76,7 @@ def test_trend_grows_when_starting_to_work():
 def test_contribution_counts():
     data = koi(calendar(400, per_day=2))
     assert data.week_contributions == 14
-    assert data.year_contributions == 365 * 2
+    assert data.month_contributions == 30 * 2
 
 
 def test_active_week_swims_faster():

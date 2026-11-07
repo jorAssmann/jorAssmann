@@ -9,13 +9,15 @@ Wasseroberfläche (Ringe, Seerosen, Blütenblatt, Glitzern), Abdunklung der Rän
 """
 
 import hashlib
+import math
 import random
 from xml.sax.saxutils import escape
 
 from . import fish
 from .model import KoiData
 
-WIDTH, HEIGHT = 480, 270
+# Breitformat: füllt die Inhaltsbreite eines GitHub-READMEs (rund 840 px) ohne Skalierung.
+WIDTH, HEIGHT = 840, 270
 
 LABEL = "#d8ebe4"
 RIPPLE = "#bfe3dc"
@@ -30,19 +32,31 @@ BODIES = {
     "platinum": ("#e6e9ee", "#a9b0bb"),
 }
 
-# Rundkurs durch den Teich als glatte geschlossene Kurve durch diese Wegpunkte.
+# Rundkurs durch den Teich als glatte geschlossene Kurve durch diese Wegpunkte, ein langes
+# Oval mit leichten Wellen an den Längsseiten.
 # Glatt heißt: Die Richtung springt nirgends, sonst zuckt der Koi bei rotate="auto".
 SWIM_WAYPOINTS: tuple[fish.Point, ...] = (
-    (240, 74),
-    (326, 78),
-    (360, 122),
-    (328, 164),
-    (238, 176),
-    (150, 164),
-    (116, 122),
-    (152, 82),
+    (420, 72),
+    (560, 66),
+    (676, 92),
+    (712, 130),
+    (668, 168),
+    (540, 180),
+    (420, 170),
+    (300, 180),
+    (172, 168),
+    (128, 130),
+    (164, 92),
+    (280, 66),
 )
 SWIM_PATH = fish.smooth_closed(SWIM_WAYPOINTS)
+
+# `KoiData.swim_seconds` gilt für eine Runde dieser Länge (die Bahn im früheren, schmaleren
+# Teich). Längere Bahn = längere Runde, damit das Tempo des Koi gleich bleibt.
+REFERENCE_LAP = 570.0
+SWIM_LAP_FACTOR = (
+    sum(math.dist(SWIM_WAYPOINTS[i - 1], p) for i, p in enumerate(SWIM_WAYPOINTS)) / REFERENCE_LAP
+)
 
 TREND_ARROWS = {1: "↗ wächst", 0: "→ hält sich", -1: "↘ schrumpft"}
 FONT = "'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif"
@@ -178,7 +192,7 @@ def _koi_layers(data: KoiData, body: str) -> tuple[str, str]:
     """Liefert (defs, Szene) für Schatten und Koi, beide auf derselben Schwimmbahn."""
     defs = _fish_defs(body, data.tail_beat_seconds)
     motion = (
-        f'<animateMotion dur="{data.swim_seconds:.1f}s" repeatCount="indefinite" '
+        f'<animateMotion dur="{data.swim_seconds * SWIM_LAP_FACTOR:.1f}s" repeatCount="indefinite" '
         f'rotate="auto" path="{SWIM_PATH}"/>'
     )
     scene = (
@@ -228,7 +242,7 @@ def _pebbles(rng: random.Random) -> str:
     stones = "".join(
         f'<ellipse cx="{rng.uniform(16, WIDTH - 16):.0f}" cy="{rng.uniform(16, HEIGHT - 16):.0f}" '
         f'rx="{rng.uniform(4, 12):.1f}" ry="{rng.uniform(3, 7):.1f}" fill="url(#pebble)"/>'
-        for _ in range(18)
+        for _ in range(32)
     )
     return f'<g opacity="0.4" filter="url(#blur-1)">{stones}</g>'
 
@@ -236,7 +250,7 @@ def _pebbles(rng: random.Random) -> str:
 def _caustics(rng: random.Random) -> str:
     """Lichtflecken am Grund, die langsam wandern, wie Sonne durch bewegtes Wasser."""
     parts: list[str] = []
-    for i in range(5):
+    for i in range(9):
         cx, cy = rng.uniform(60, WIDTH - 60), rng.uniform(40, HEIGHT - 60)
         dx, dy = rng.uniform(-18, 18), rng.uniform(-10, 10)
         dur = rng.uniform(11, 19)
@@ -253,9 +267,11 @@ def _caustics(rng: random.Random) -> str:
 def _ripples(rng: random.Random) -> str:
     """Ringe auf der Wasseroberfläche, die sich ausbreiten und verblassen."""
     parts: list[str] = []
-    for i in range(4):
+    count = 7
+    for i in range(count):
         x, y = rng.uniform(60, WIDTH - 60), rng.uniform(40, HEIGHT - 80)
-        timing = f'dur="6.8s" begin="{i * 1.7:.1f}s" repeatCount="indefinite"'
+        # Starts gleichmäßig über die Dauer verteilt, damit immer etwa gleich viele Ringe laufen
+        timing = f'dur="6.8s" begin="{i * 6.8 / count:.1f}s" repeatCount="indefinite"'
         parts.append(
             f'<circle cx="{x:.0f}" cy="{y:.0f}" r="0" fill="none" '
             f'stroke="{RIPPLE}" stroke-width="1">'
@@ -308,10 +324,15 @@ def _water_lily(x: float, y: float, size: float) -> str:
 
 def _drifting_petal() -> str:
     """Ein einzelnes Blütenblatt treibt langsam über den Teich."""
-    path = f"M -20 {HEIGHT * 0.35:.0f} C 120 60, 260 190, {WIDTH + 20} {HEIGHT * 0.55:.0f}"
+    path = (
+        f"M -20 {HEIGHT * 0.35:.0f} C {WIDTH * 0.25:.0f} 60, {WIDTH * 0.54:.0f} 190, "
+        f"{WIDTH + 20} {HEIGHT * 0.55:.0f}"
+    )
+    # Treibt gleich langsam, egal wie breit der Teich ist: 48 s je 480 px
     return (
         '<path d="M0 0C2-2 6-2 8 0C6 2 2 2 0 0Z" fill="#f6bfd0" opacity="0.9">'
-        f'<animateMotion dur="48s" repeatCount="indefinite" rotate="auto" path="{path}"/>'
+        f'<animateMotion dur="{48 * WIDTH / 480:.0f}s" repeatCount="indefinite" rotate="auto" '
+        f'path="{path}"/>'
         "</path>"
     )
 
@@ -323,7 +344,7 @@ def _glints(rng: random.Random) -> str:
         f'rx="2.2" ry="0.9" fill="#fff" opacity="0">'
         f'<animate attributeName="opacity" values="0;0.75;0" dur="{rng.uniform(2.5, 4.5):.1f}s" '
         f'begin="{i * 1.3:.1f}s" repeatCount="indefinite"/></ellipse>'
-        for i in range(6)
+        for i in range(10)
     )
 
 
@@ -349,10 +370,10 @@ def _text_width(text: str, size: float, bold: bool = False) -> float:
 
 def _legend(data: KoiData) -> str:
     """Beschriftung unten: Lebensphase, Trend, Jahreszahl, Sprachen (so viele passen)."""
-    count = f"{data.year_contributions:,}".replace(",", ".")
+    count = f"{data.month_contributions:,}".replace(",", ".")
     head = f"{data.stage} · {TREND_ARROWS[data.trend]}"
-    noun = "Contribution" if data.year_contributions == 1 else "Contributions"
-    sub = f"{count} {noun} im letzten Jahr"
+    noun = "Contribution" if data.month_contributions == 1 else "Contributions"
+    sub = f"{count} {noun} in den letzten 30 Tagen"
     y = HEIGHT - 16
     items = [
         f'<rect y="{HEIGHT - 66}" width="{WIDTH}" height="66" fill="url(#band)"/>',
@@ -397,10 +418,11 @@ def render_svg(data: KoiData, body: str = "white", label: bool = True) -> str:
         raise ValueError(f"Unbekannter Körper '{body}'. Möglich: {', '.join(BODIES)}")
     scene_rng = _rng_for(data.login, "teich")
     koi_defs, koi_scene = _koi_layers(data, body)
-    noun = "Contribution" if data.year_contributions == 1 else "Contributions"
+    noun = "Contribution" if data.month_contributions == 1 else "Contributions"
     # Steht auch im Attribut aria-label="…", deshalb zusätzlich " maskieren.
     title = escape(
-        f"Koi von {data.login}: {data.stage}, {data.year_contributions} {noun} im letzten Jahr",
+        f"Koi von {data.login}: {data.stage}, "
+        f"{data.month_contributions} {noun} in den letzten 30 Tagen",
         {'"': "&quot;"},
     )
 
@@ -416,6 +438,7 @@ def render_svg(data: KoiData, body: str = "white", label: bool = True) -> str:
         f"{_ripples(scene_rng)}"
         f"{_lily_pad(WIDTH - 42, 42, 30, 200, flower=True)}"
         f"{_lily_pad(WIDTH - 92, 18, 16, 120)}{_lily_pad(34, 48, 21, 330)}"
+        f"{_lily_pad(round(WIDTH * 0.38), 12, 13, 60)}"
         f"{_drifting_petal()}{_glints(scene_rng)}"
         f'<rect width="{WIDTH}" height="{HEIGHT}" fill="url(#vignette)"/>'
         f"{_legend(data) if label else ''}"
