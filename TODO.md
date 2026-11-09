@@ -15,7 +15,7 @@
 - [x] Commit-Adresse im Konto prüfen
 - [x] Erster Commit, Repo `jorAssmann/jorAssmann` öffentlich anlegen (docs/ANLEITUNG.md)
 - [x] KOI_TOKEN anlegen (nur Metadata: Read) und als Secret hinterlegen, ggf. Freigabe Org-Admin
-- [ ] Workflow „Koi“ manuell starten, Log prüfen: keine Warnung, Sprachen erscheinen
+- [x] Workflow „Koi“ manuell starten, Log prüfen: keine Warnung, Sprachen erscheinen
 - [x] Workflow „Prüfen“ grün
 - [ ] Nach einigen Tagen: Größe und Trend plausibel?
 
