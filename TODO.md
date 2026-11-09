@@ -26,7 +26,16 @@
 - [x] Schwimmroute statt fester Runde: umherziehen, ausruhen, am Rand verharren und wenden
       (übernommen aus dem privaten Repo)
 
+## Entscheidungen
+- **Keine Sprachfarben aus Firmen-Repos** (9. 11. 2026): Mit „Private contributions“ zählen
+  die Org-Commits für die Größe, die API liefert sie aber nur als anonyme Summe ohne Repo,
+  auch mit vollen Rechten. Farben bräuchten eigenen Abfragecode und einen Org-Token mit
+  Lesezugriff auf Firmencode als Secret im öffentlichen Repo. Nutzen (Farbflecken) zu klein
+  für Aufwand und Risiko.
+
 ## Später
 - [ ] Private Kopie: frisch ohne Historie nach `~/Projekte/privat/github-koi`, Repo `<privater-name>/<privater-name>`
       (vorher: Okay der Führungskraft, ggf. MIT-Lizenz im Firmen-Repo; privaten Benutzernamen erfragen)
+- [ ] `vergabeRadar`: Commits laufen über das private Konto `reischassmann-boop` und zählen
+      nicht für `jorAssmann`; Identität im Firmenordner umstellen (Skill `git-workflow`)
 - [ ] Ähnliche Sprachfarben (Python/TypeScript sind beide blau) unterscheidbarer machen

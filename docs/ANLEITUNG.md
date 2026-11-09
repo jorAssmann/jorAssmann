@@ -42,26 +42,28 @@ Alle Schwellenwerte stehen kommentiert oben in [`src/koi_profil/model.py`](../sr
    E-Mail-Adresse (`git config user.email`) in deinem Konto hinterlegt ist
    (*Settings → Emails*).
 2. **Repo hochladen:** siehe [Hochladen](#hochladen).
-3. **KOI_TOKEN anlegen** (für die Sprachfarben der privaten Firmen-Repos):
+3. **Private Arbeit zählen lassen:** im eigenen Profil über dem Kalender *Contribution
+   settings → Private contributions* einschalten. Erst dann zählt GitHub Commits in
+   privaten Repos, auch in denen der Firmen-Organisation, und der Koi wächst mit der
+   echten Arbeit. Ohne die Einstellung liefert die API diese Commits gar nicht, auch nicht
+   mit vollen Rechten. Achtung: Der Profil-Kalender zeigt diese Arbeit dann öffentlich als
+   Anzahl (ohne Repo-Namen), unabhängig vom Koi.
+4. **KOI_TOKEN (optional, nur für private Repos des eigenen Kontos):**
    - *Settings → Developer settings → Personal access tokens → Fine-grained tokens →
      Generate new token*
-   - Name `koi-profil`, Ablauf 1 Jahr (oder was die Org erlaubt), Resource owner
-     **die Firmen-Organisation**, Repository access **All repositories**
-   - Permissions: nur **Metadata: Read-only** (ist automatisch gesetzt). Mehr nicht:
-     Der Token liegt in einem öffentlichen Repo und soll im schlimmsten Fall keinen Code
-     preisgeben können.
-   - Je nach Org-Einstellung muss ein Org-Admin den Token freigeben.
+   - Name `koi-profil`, Ablauf 1 Jahr, Resource owner **dein Konto**, Repository access
+     **All repositories**, Permissions nur **Metadata: Read-only** (ist automatisch
+     gesetzt). Mehr nicht: Der Token liegt in einem öffentlichen Repo.
    - Im Profil-Repo: *Settings → Secrets and variables → Actions → New repository
      secret*, Name `KOI_TOKEN`, Wert einfügen. Den Token nirgends sonst speichern.
-4. **Erster Lauf:** *Actions → Koi → Run workflow*. Im Log steht z. B.
-   `Koi gezeichnet: … | Jungkoi, Wachstum 49 %, … Contributions in 30 Tagen … | Sprachen: Python 54 %, C# 31 %`.
-   Danach läuft er jede Nacht um 04:15 UTC. Bleiben die Sprachen trotz Commits in
-   Firmen-Repos leer: mit der IT klären, ob *Contents: Read-only* nötig ist, und dann
-   nur für die tatsächlich bearbeiteten Repos vergeben.
-5. **Optional, nur für den Rückfall:** *Settings → Public profile → „Include private
-   contributions on my profile“*. Dann zählt auch der eingebaute Token deine private
-   Arbeit für die Größe. Achtung: Das zeigt den Kalender deiner privaten Arbeit (nur
-   Anzahlen) öffentlich im Profil, unabhängig vom Koi. Mit gültigem KOI_TOKEN nicht nötig.
+   - **Für Firmen-Repos bringt er nichts:** GitHub liefert Commits aus privaten Org-Repos
+     nur als anonyme Summe, ohne Repo und damit ohne Sprache, auch mit vollen Rechten
+     (gemessen am 9. 11. 2026). Die Fleckenfarben kommen deshalb nur aus öffentlichen
+     Repos und privaten Repos des eigenen Kontos. Ein anderer Weg wurde verworfen, siehe
+     TODO.md, „Entscheidungen“.
+5. **Erster Lauf:** *Actions → Koi → Run workflow*. Im Log steht z. B.
+   `Koi gezeichnet: … | Jungkoi, Wachstum 53 %, 57 Contributions in 30 Tagen … | Sprachen: Python 100 %`.
+   Danach läuft er jede Nacht um 04:15 UTC.
 
 **Läuft der Token ab oder verliert er den Zugriff** (HTTP 401/403), zeichnet der Workflow
 mit dem eingebauten Token weiter (nur öffentliche Daten) und zeigt im Lauf eine gelbe
@@ -74,6 +76,8 @@ auf einzelne Repos, wird mit dem Rest gezeichnet, ebenfalls mit Warnung.
   Sprachen samt Mengenverhältnis. Weil der Workflow das Bild täglich committet, ergibt die
   Git-Historie dazu eine öffentliche Zeitreihe (Größe, Jahreszahl, Schwimmtempo als Maß
   der Wochenaktivität). Repo-Namen, Code und Commit-Texte erscheinen nirgends.
+- **Private contributions** (Einrichten, Schritt 3) macht zusätzlich im Profil-Kalender
+  sichtbar, an welchen Tagen wie viel in privaten und Firmen-Repos gearbeitet wurde.
 - **KOI_TOKEN** kann nur lesen und liegt als verschlüsseltes Secret im Repo. Workflows aus
   fremden Pull Requests bekommen ihn nicht. Nur der nächtliche Koi-Lauf nutzt ihn.
 - **Eingebauter `GITHUB_TOKEN`** darf nur dieses Repo beschreiben, und der Workflow schreibt

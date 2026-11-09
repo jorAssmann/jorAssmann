@@ -3,10 +3,13 @@
 Nur Standardbibliothek, damit der Workflow nichts installieren muss. Die GraphQL-API
 verlangt immer einen Token. Was er sieht, bestimmt das Ergebnis:
 
-- eigener Token (Secret `KOI_TOKEN`): auch private Repos, auf die er Zugriff hat,
-  mit ihren Sprachen.
-- eingebauter `GITHUB_TOKEN` des Workflows: öffentliche Repos; private Arbeit erscheint
-  nur als Anzahl im Kalender, wenn im Profil „Private contributions“ eingeschaltet ist.
+- eigener Token (Secret `KOI_TOKEN`): zusätzlich private Repos des eigenen Kontos mit
+  ihren Sprachen.
+- eingebauter `GITHUB_TOKEN` des Workflows: öffentliche Repos.
+
+Private Repos einer Organisation liefert GitHub mit jedem Token nur als anonyme Anzahl im
+Kalender (ohne Repo, also ohne Sprache), und das nur, wenn im Profil „Private
+contributions“ eingeschaltet ist.
 
 Die Antwort wird vollständig geprüft (`parse_response`), bevor etwas gezeichnet wird.
 Teilfehler (z. B. ein Repo, auf das der Token keinen Zugriff hat) halten den Koi nicht
