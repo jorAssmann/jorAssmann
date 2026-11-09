@@ -23,6 +23,8 @@
 - [x] Becken im Breitformat 840 × 270, füllt die README-Breite
 - [x] Beschriftung: Contributions der letzten 30 Tage statt des Jahres
 - [x] Profiltext oberhalb des Koi: „Das ist mein Contribution-Koi“
+- [x] Schwimmroute statt fester Runde: umherziehen, ausruhen, am Rand verharren und wenden
+      (übernommen aus dem privaten Repo)
 
 ## Später
 - [ ] Private Kopie: frisch ohne Historie nach `~/Projekte/privat/github-koi`, Repo `<privater-name>/<privater-name>`
